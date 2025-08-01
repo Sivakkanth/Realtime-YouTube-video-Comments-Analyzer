@@ -1,9 +1,16 @@
 'use client'
+import Image from "next/image";
 import { useState } from "react";
+type AnalyzeResult = {
+  total_comments: number;
+  positive_score: number;
+  summary: string;
+  suggestions: string;
+};
 
 export default function Home() {
   const [url, setUrl] = useState("");
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<AnalyzeResult | null>(null);
   const [loading, setLoading] = useState(false);
 
   const analyzeVideo = async () => {
@@ -36,7 +43,7 @@ export default function Home() {
           <div className="bg-white/80 backdrop-blur-xl rounded-[22px] p-8 rounded-3xl border-gradient-to-tr from-indigo-400 via-blue-400 to-purple-400 shadow-xl animate-border-glow">
             <div className="flex flex-col items-center mb-6">
               <span className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-tr from-indigo-500 to-blue-400 shadow-lg mb-2">
-                <img src="/favicon.png" alt="YouTube Icon" className="w-8 h-8" />
+                <Image src="/favicon.png" alt="YouTube Icon" width={32} height={32} className="w-8 h-8" />
               </span>
               <h1 className="text-3xl font-extrabold text-indigo-700 mb-1 py-3 text-center tracking-tight drop-shadow">YouTube Comment Analyzer</h1>
               <p className="text-gray-500 text-center">Get instant insights and suggestions for your YouTube videos!</p>
@@ -113,7 +120,7 @@ export default function Home() {
           </div>
           ): <div className="text-center space-y-6 p-10 m-3 animate-fade-in">
             <h2 className="text-2xl font-bold text-indigo-600 flex items-center justify-center gap-2">
-              <img src="/favicon.png" alt="YouTube Icon" className="w-8 h-8 mr-5" />
+              <Image src="/favicon.png" alt="YouTube Icon" width={32} height={32} className="w-8 h-8 mr-5" />
               Welcome to YouTube Comment Analyzer
             </h2>
             <p className="text-gray-600 text-base px-5 pb-3">
