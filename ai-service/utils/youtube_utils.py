@@ -1,7 +1,7 @@
 import re
 from googleapiclient.discovery import build
 
-API_KEY = 'AIzaSyAFeLh0zf4l5WtGh5yqV8-klq3UaCyPPAk'
+API_KEY = 'XXXXXXXXXXXXXXXXXXXXXXXXX'  # Replace with your API key
 API_SERVICE_NAME = 'youtube'
 API_VERSION = 'v3'
 
