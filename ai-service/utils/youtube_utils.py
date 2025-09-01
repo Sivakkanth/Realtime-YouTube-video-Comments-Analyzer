@@ -1,9 +1,6 @@
 import re
-from googleapiclient.discovery import build
-
-API_KEY = 'XXXXXXXXXXXXXXXXXXXXXXXXX'  # Replace with your API key
-API_SERVICE_NAME = 'youtube'
-API_VERSION = 'v3'
+from youtube_comment_downloader import YoutubeCommentDownloader
+from datetime import datetime
 
 def extract_video_id(url):
     patterns = [
@@ -17,43 +14,34 @@ def extract_video_id(url):
             return match.group(1)
     raise ValueError("Invalid YouTube URL format.")
 
+
 def get_comments(video_url):
-    video_id = extract_video_id(video_url)
-    youtube = build(API_SERVICE_NAME, API_VERSION, developerKey=API_KEY)
+    downloader = YoutubeCommentDownloader()
     comments = []
-    next_page_token = None
 
     try:
-        while True:
-            request = youtube.commentThreads().list(
-                part="snippet",
-                videoId=video_id,
-                maxResults=100,
-                textFormat="plainText",
-                pageToken=next_page_token
-            )
-            response = request.execute()
+        comments_generator = downloader.get_comments_from_url(video_url, sort_by=1)
 
-            for item in response["items"]:
-                comment = item["snippet"]["topLevelComment"]["snippet"]
-                comment_snippet = {
-                    "authorDisplayName": comment["authorDisplayName"],
-                    "textDisplay": comment["textDisplay"],
-                    "likeCount": comment.get("likeCount", 0),
-                    "publishedAt": comment["publishedAt"]
-                }
-                comment_data = {
-                    "author": comment_snippet["authorDisplayName"],
-                    "text": comment_snippet["textDisplay"],
-                    "likes": comment_snippet["likeCount"],
-                    "published_at": comment_snippet["publishedAt"]
-                }
-                comments.append(comment_data)
+        for item in comments_generator:
+            # Convert likes to int
+            likes = int(item.get("votes", 0))
 
-            next_page_token = response.get("nextPageToken")
-            if not next_page_token:
-                break
+            # Convert time_parsed (float) to ISO string
+            published_at = None
+            if item.get("time_parsed"):
+                published_at = datetime.utcfromtimestamp(
+                    item["time_parsed"]
+                ).isoformat() + "Z"
+
+            comment_data = {
+                "author": item.get("author", ""),
+                "text": item.get("text", ""),
+                "likes": likes,
+                "published_at": published_at
+            }
+            comments.append(comment_data)
+
     except Exception as e:
         raise RuntimeError(f"Failed to fetch comments: {e}")
-    
+
     return comments

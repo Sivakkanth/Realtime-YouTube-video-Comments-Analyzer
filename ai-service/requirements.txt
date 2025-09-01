@@ -7,13 +7,14 @@ vaderSentiment
 transformers
 torch
 pydantic
+textblob
 
-ai_service/
-├── main.py                # FastAPI app
-├── youtube_utils.py       # YouTube comment extraction
-├── sentiment_utils.py     # Sentiment classification logic
-├── summarizer.py          # Summarization logic
-├── suggester.py           # Suggestion generator
-├── requirements.txt       # Dependencies
-├── test_data/             # Sample videos and comment csvs
-└── models/                # Custom or fine-tuned models (if any)
+# ai_service/
+# ├── main.py                # FastAPI app
+# ├── youtube_utils.py       # YouTube comment extraction
+# ├── sentiment_utils.py     # Sentiment classification logic
+# ├── summarizer.py          # Summarization logic
+# ├── suggester.py           # Suggestion generator
+# ├── requirements.txt       # Dependencies
+# ├── test_data/             # Sample videos and comment csvs
+# └── models/                # Custom or fine-tuned models (if any)
