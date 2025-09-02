@@ -1,19 +1,19 @@
 import re
-from textblob import TextBlob
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
-from fastapi import HTTPException
+from pathlib import Path
+from typing import List, Dict
+import asyncio
 
-MODEL_PATH = "D:\\d\\7\\EE7260_Advanced_Artificial_Intelligence\\final_project\\Realtime-YouTube-video-Comments-Analyzer\\ai-service\\my_model"
+MODEL_PATH = Path(__file__).parent.parent / "my_model"
 
 # Global variables for model and tokenizer
-tokenizer = None
-model = None
-device = None
+tokenizer = AutoTokenizer.from_pretrained(str(MODEL_PATH))
+model = AutoModelForSequenceClassification.from_pretrained(str(MODEL_PATH))
+device: str | None = None
 
 # Load the model and tokenizer from the local folder
 def load_model():
-    """Loads the sentiment analysis model and tokenizer."""
     global tokenizer, model, device
     try:
         print("Loading model and tokenizer...")
@@ -45,37 +45,33 @@ def predict_sentiment_text(text: str) -> str:
     inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True).to(device)
 
     with torch.no_grad():
-        outputs = model(**inputs)
-        logits = outputs.logits
-        probabilities = torch.softmax(logits, dim=1)
-    
-    predicted_class_id = probabilities.argmax(dim=1).item()
-    
-    label = model.config.id2label[predicted_class_id]
-    
+        logits = model(**inputs).logits
+        predicted_id = torch.argmax(torch.softmax(logits, dim=1), dim=1).item()
+        label = model.config.id2label[predicted_id]
+
     return "p" if label == "LABEL_1" else "n"
 
 
-def classify_comments(comments_data):
-    classified = []
-
-    for comment in comments_data:
-        raw_text = comment.get('text', '')
-        cleaned = clean_text(raw_text)
-
+async def classify_comments(comments_data: List[Dict]) -> List[Dict]:
+    async def classify_single_comment(comment: Dict) -> Dict | None:
+        text = comment.get("text", "")
+        cleaned = clean_text(text)
         if not cleaned:
-            continue  # Skip empty or meaningless comments
+            return None  # Skip empty comments
 
-        # polarity = TextBlob(cleaned).sentiment.polarity
-        # status = 'p' if polarity >= 0 else 'n'
-        status = predict_sentiment_text(cleaned)
+        try:
+            # Run CPU-bound prediction in a thread
+            status = await asyncio.to_thread(predict_sentiment_text, cleaned)
+        except Exception:
+            status = "n"  # fallback if prediction fails
 
-        classified.append({
+        return {
             "author": comment.get("author", ""),
-            "text": raw_text.strip(),
+            "text": cleaned,
             "likes": comment.get("likes", 0),
-            "time": comment.get("time", ""),
+            "time": comment.get("published_at", ""),
             "status": status
-        })
-
-    return classified
+        }
+    tasks = [classify_single_comment(c) for c in comments_data]
+    results = await asyncio.gather(*tasks)
+    return [r for r in results if r is not None]

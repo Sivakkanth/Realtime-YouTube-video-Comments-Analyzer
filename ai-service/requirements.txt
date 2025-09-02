@@ -1,20 +1,24 @@
-google-api-python-client
-pandas
-fastapi
-uvicorn
-nltk
-vaderSentiment
-transformers
-torch
-pydantic
-textblob
+# FastAPI + server
+fastapi==0.115.6
+uvicorn==0.32.1
 
-# ai_service/
-# ├── main.py                # FastAPI app
-# ├── youtube_utils.py       # YouTube comment extraction
-# ├── sentiment_utils.py     # Sentiment classification logic
-# ├── summarizer.py          # Summarization logic
-# ├── suggester.py           # Suggestion generator
-# ├── requirements.txt       # Dependencies
-# ├── test_data/             # Sample videos and comment csvs
-# └── models/                # Custom or fine-tuned models (if any)
+# Data handling
+pandas==2.2.3
+numpy==1.26.4
+pydantic==2.10.2
+
+# NLP & Sentiment
+nltk==3.9.1
+vaderSentiment==3.3.2
+textblob==0.19.0
+
+# HuggingFace Transformers & Torch
+transformers==4.46.3
+torch==2.5.1
+
+# YouTube
+google-api-python-client==2.154.0
+youtube-comment-downloader==0.1.76
+
+# Async requests
+httpx==0.28.0
