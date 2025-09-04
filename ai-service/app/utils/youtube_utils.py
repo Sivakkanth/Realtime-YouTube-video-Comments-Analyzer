@@ -5,6 +5,7 @@ import logging
 import asyncio
 from datetime import datetime
 from typing import List, Dict
+from urllib.parse import urlparse, parse_qs
 from youtube_comment_downloader import YoutubeCommentDownloader
 from concurrent.futures import ThreadPoolExecutor
 
@@ -12,16 +13,39 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 executor = ThreadPoolExecutor()
 
+# def extract_video_id(url: str) -> str:
+#     patterns = [
+#         r"youtu\.be/([a-zA-Z0-9_-]{11})",
+#         r"youtube\.com/watch\?v=([a-zA-Z0-9_-]{11})",
+#         r"youtube\.com/embed/([a-zA-Z0-9_-]{11})"
+#     ]
+#     for pattern in patterns:
+#         match = re.search(pattern, url)
+#         if match:
+#             return match.group(1)
+#     logger.error(f"Invalid YouTube URL provided: {url}")
+#     raise ValueError("Invalid YouTube URL format.")
+
 def extract_video_id(url: str) -> str:
-    patterns = [
-        r"youtu\.be/([a-zA-Z0-9_-]{11})",
-        r"youtube\.com/watch\?v=([a-zA-Z0-9_-]{11})",
-        r"youtube\.com/embed/([a-zA-Z0-9_-]{11})"
-    ]
-    for pattern in patterns:
-        match = re.search(pattern, url)
+    parsed = urlparse(url)
+
+    # Case 1: youtu.be short links
+    if "youtu.be" in parsed.netloc:
+        return parsed.path.strip("/")
+
+    # Case 2: youtube.com/watch?v=...
+    if "youtube.com" in parsed.netloc:
+        qs = parse_qs(parsed.query)
+        if "v" in qs:
+            return qs["v"][0]
+        # Case 3: shorts URL
+        if parsed.path.startswith("/shorts/"):
+            return parsed.path.split("/")[2]
+        # Case 4: embed URL
+        match = re.match(r"^/embed/([a-zA-Z0-9_-]{11})", parsed.path)
         if match:
             return match.group(1)
+
     logger.error(f"Invalid YouTube URL provided: {url}")
     raise ValueError("Invalid YouTube URL format.")
 
