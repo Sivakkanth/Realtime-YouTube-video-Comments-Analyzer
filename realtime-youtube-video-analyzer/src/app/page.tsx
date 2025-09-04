@@ -28,6 +28,8 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
 
   const analyzeVideo = async () => {
+    if (!url) return alert("Please enter a YouTube video URL");
+    
     setLoading(true);
     try {
       const response = await fetch("http://127.0.0.1:8000/analyze", {
