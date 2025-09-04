@@ -1,12 +1,22 @@
+# Python cache
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+
+# Logs
 *.log
+
+# OS / system files
 *.DS_Store
+
+# Environment files
 .env
+
+# Git
 .git
 .gitignore
+
+# Editor configs
 .vscode
 .idea
-*.safetensors
