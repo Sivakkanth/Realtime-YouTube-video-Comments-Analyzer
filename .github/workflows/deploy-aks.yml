@@ -1,0 +1,42 @@
+name: Deploy to AKS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Set AKS Context
+      uses: azure/aks-set-context@v3
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        cluster-name: youtube-analyzer-aks
+        resource-group: youtube-analyzer-rg
+
+    - name: Build & Push Frontend Image
+      run: |
+        docker build -t anlyzer.azurecr.io/frontend:latest ./frontend
+        echo ${{ secrets.ACR_PASSWORD }} | docker login anlyzer.azurecr.io -u ${{ secrets.ACR_USERNAME }} --password-stdin
+        docker push anlyzer.azurecr.io/frontend:latest
+
+    - name: Build & Push Backend Image
+      run: |
+        docker build -t anlyzer.azurecr.io/backend:latest ./backend
+        echo ${{ secrets.ACR_PASSWORD }} | docker login anlyzer.azurecr.io -u ${{ secrets.ACR_USERNAME }} --password-stdin
+        docker push anlyzer.azurecr.io/backend:latest
+
+    - name: Deploy to AKS
+      run: |
+        kubectl apply -f k8s/namespace.yml
+        kubectl apply -f k8s/backend-deploy.yml
+        kubectl apply -f k8s/frontend-deploy.yml
+        kubectl apply -f k8s/ingress.yml
