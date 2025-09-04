@@ -24,13 +24,13 @@ jobs:
 
     - name: Build & Push Frontend Image
       run: |
-        docker build -t anlyzer.azurecr.io/frontend:latest ./frontend
+        docker build -t anlyzer.azurecr.io/frontend:latest ./realtime-youtube-video-analyzer
         echo ${{ secrets.ACR_PASSWORD }} | docker login anlyzer.azurecr.io -u ${{ secrets.ACR_USERNAME }} --password-stdin
         docker push anlyzer.azurecr.io/frontend:latest
 
     - name: Build & Push Backend Image
       run: |
-        docker build -t anlyzer.azurecr.io/backend:latest ./backend
+        docker build -t anlyzer.azurecr.io/backend:latest ./ai-service
         echo ${{ secrets.ACR_PASSWORD }} | docker login anlyzer.azurecr.io -u ${{ secrets.ACR_USERNAME }} --password-stdin
         docker push anlyzer.azurecr.io/backend:latest
 
