@@ -34,7 +34,7 @@ jobs:
     - name: Build & Push Frontend Image
       run: |
         docker build -t anlyzer.azurecr.io/frontend:latest ./realtime-youtube-video-analyzer
-        docker push anlyzer.azurecr.io/frontend:late
+        docker push anlyzer.azurecr.io/frontend:latest
 
     - name: Build & Push Backend Image
       run: |
