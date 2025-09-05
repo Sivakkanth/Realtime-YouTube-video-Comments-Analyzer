@@ -24,13 +24,6 @@ jobs:
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
 
-    # - name: Set AKS Context
-    #   uses: azure/aks-set-context@v3
-    #   with:
-    #     creds: ${{ secrets.AZURE_CREDENTIALS }}
-    #     cluster-name: youtube-analyzer-aks
-    #     resource-group: youtube-analyzer-rg
-
     - name: Build & Push Frontend Image
       run: |
         docker build --platform linux/amd64 -t anlyzer.azurecr.io/frontend:latest ./realtime-youtube-video-analyzer
@@ -44,13 +37,19 @@ jobs:
     - name: Set AKS Context
       uses: azure/aks-set-context@v3
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
         cluster-name: youtube-analyzer-aks
         resource-group: youtube-analyzer-rg
 
     - name: Deploy to AKS
       run: |
         kubectl apply -f k8s/namespace.yml
+        kubectl wait --for=condition=available ns/youtube-analyzer --timeout=60s || true
         kubectl apply -f k8s/backend-deploy.yml
         kubectl apply -f k8s/frontend-deploy.yml
         kubectl apply -f k8s/ingress.yml
+        
+    - name: Verify Deployments
+      run: |
+        kubectl get pods -n youtube-analyzer
+        kubectl get svc -n youtube-analyzer
+        kubectl get ingress -n youtube-analyzer
