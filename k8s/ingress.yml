@@ -27,3 +27,8 @@ spec:
               name: backend-service
               port:
                 number: 8000
+  tls:
+    - hosts:
+        - myfrontend.example.com
+        - mybackend.example.com
+      secretName: youtube-analyzer-tls
