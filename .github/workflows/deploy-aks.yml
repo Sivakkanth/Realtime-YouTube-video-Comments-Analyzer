@@ -1,0 +1,55 @@
+name: Deploy to AKS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    - name: Login to ACR
+      uses: azure/docker-login@v1
+      with:
+        login-server: anlyzer.azurecr.io
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+
+    - name: Build & Push Frontend Image
+      run: |
+        docker build --platform linux/amd64 -t anlyzer.azurecr.io/frontend:latest ./realtime-youtube-video-analyzer
+        docker push anlyzer.azurecr.io/frontend:latest
+
+    - name: Build & Push Backend Image
+      run: |
+        docker build --platform linux/amd64 -t anlyzer.azurecr.io/backend:latest ./ai-service
+        docker push anlyzer.azurecr.io/backend:latest
+        
+    - name: Set AKS Context
+      uses: azure/aks-set-context@v3
+      with:
+        cluster-name: youtube-analyzer-aks
+        resource-group: youtube-analyzer-rg
+
+    - name: Deploy to AKS
+      run: |
+        kubectl apply -f k8s/namespace.yml
+        kubectl wait --for=condition=available ns/youtube-analyzer --timeout=60s || true
+        kubectl apply -f k8s/backend-deploy.yml
+        kubectl apply -f k8s/frontend-deploy.yml
+        kubectl apply -f k8s/ingress.yml
+        
+    - name: Verify Deployments
+      run: |
+        kubectl get pods -n youtube-analyzer
+        kubectl get svc -n youtube-analyzer
+        kubectl get ingress -n youtube-analyzer
