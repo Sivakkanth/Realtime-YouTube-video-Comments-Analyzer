@@ -26,7 +26,21 @@ executor = ThreadPoolExecutor()
 #     logger.error(f"Invalid YouTube URL provided: {url}")
 #     raise ValueError("Invalid YouTube URL format.")
 
-def extract_video_id(url: str) -> str:
+
+def convert_youtube_url(short_url):
+    """
+    Converts a youtu.be URL to a standard YouTube watch URL.
+    """
+    # Regex to find the video ID after youtu.be/
+    video_id_match = re.search(r'youtu\.be/([a-zA-Z0-9_-]+)', short_url)
+    if video_id_match:
+        video_id = video_id_match.group(1)
+        return f'https://www.youtube.com/watch?v={video_id}'
+    return None
+
+def extract_video_id(link: str) -> str:
+
+    url = convert_youtube_url(link)
     parsed = urlparse(url)
 
     # Case 1: youtu.be short links
