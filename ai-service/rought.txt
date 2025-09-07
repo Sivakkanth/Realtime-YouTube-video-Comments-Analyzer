@@ -1,0 +1,41 @@
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+
+# Load the fine-tuned model and tokenizer from the saved directory
+model_path = "D:\\d\\7\\EE7260_Advanced_Artificial_Intelligence\\scrapt\\model"
+model = AutoModelForSeq2SeqLM.from_pretrained(model_path)
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+
+
+# The text you want to summarize (added more context)
+text = """
+The new smartphone from TechCorp has a beautiful OLED screen, a long-lasting battery, and an incredibly fast processor. 
+However, there have been some complaints from users that the video sound is not clear, especially during video calls.
+This issue seems to be a recurring problem across different devices, suggesting it might be a software bug that needs a patch. 
+Despite this, the phone has received positive reviews for its camera quality and overall performance.
+"""
+# Tokenize the input text
+inputs = tokenizer(
+text,
+return_tensors="pt", # Return PyTorch tensors
+max_length=1024,
+truncation=True
+)
+
+# Generate the summary with adjusted parameters
+summary_ids = model.generate(
+inputs['input_ids'],
+max_length=50, # A shorter max length
+min_length=10, # A more reasonable minimum length
+num_beams=4,
+no_repeat_ngram_size=3, # Prevent repeating n-grams
+early_stopping=True
+)
+
+# Decode the generated tokens back to text
+summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+
+# Print the final output
+print("Original Text:")
+print(text)
+print("\nGenerated Summary:")
+print(summary)
