@@ -7,7 +7,7 @@ os.environ["HTTP_PROXY"] = "http://10.50.225.222:3128"
 os.environ["HTTPS_PROXY"] = "http://10.50.225.222:3128"
 os.environ["NO_PROXY"] = "localhost,127.0.0.1"
 
-MODEL_NAME = "facebook/bart-large-cnn"
+MODEL_NAME = "Sivakkanth/youtube_comments_summarizer"
 MLFLOW_MODEL_NAME = "youtube_comment_summarizer"
 MLFLOW_TRACKING_URI = "http://localhost:5000"
 

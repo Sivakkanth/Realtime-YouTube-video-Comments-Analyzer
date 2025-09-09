@@ -20,9 +20,11 @@ def summarize_comments(comments):
 
     # Use MLflow model
     df = pd.DataFrame({"text": [combined_text]})
-    summary_list = summarizer_model.predict(df)
-    
-    return summary_list[0]
+    try:
+        summary_list = summarizer_model.predict(df)
+        return summary_list[0]
+    except Exception as e:
+        return f"Error generating summary: {str(e)}"
 
 # from models.summary_model import summarizer, tokenizer
 

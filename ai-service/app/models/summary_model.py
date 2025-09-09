@@ -1,3 +1,16 @@
+# import mlflow.pyfunc
+
+# # Tracking URI
+# mlflow.set_tracking_uri("http://localhost:5000")
+
+# # Registered model name
+# MODEL_NAME = "youtube_comment_summarizer"
+
+# # Load the latest version automatically
+# summarizer_model = mlflow.pyfunc.load_model(f"models:/{MODEL_NAME}/latest")
+
+# print("✅ Loaded the latest model successfully!")
+
 import mlflow.pyfunc
 import os
 
@@ -9,7 +22,7 @@ MODEL_PATH = os.path.join(
     "mlruns",
     "1",
     "models",
-    "m-6f596ecd60ac4a64a26b9225757132d5",
+    "m-9465c416e2ba430cb5834ba6ecaadf1f",
     "artifacts"
 )
 
@@ -22,32 +35,3 @@ if not os.path.exists(mlmodel_file):
 summarizer_model = mlflow.pyfunc.load_model(MODEL_PATH)
 
 print("✅ Summarizer model loaded successfully from local path!")
-
-# MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000")
-# MLFLOW_MODEL_NAME = "youtube_comment_summarizer"
-
-# mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
-
-# summarizer_model = mlflow.pyfunc.load_model(
-#     model_uri=f"models:/{MLFLOW_MODEL_NAME}/Production"
-# )
-
-# # Load latest model from MLflow registry
-# def load_summarizer():
-#     model_uri = f"models:/{MLFLOW_MODEL_NAME}/latest"
-#     summarizer_model = mlflow.pyfunc.load_model(model_uri)
-#     return summarizer_model
-
-# summarizer_model = load_summarizer()
-
-# from transformers import pipeline, AutoTokenizer
-
-# MODEL_NAME = "facebook/bart-large-cnn"
-
-# def load_summarizer():
-#     """Load the summarizer model and tokenizer"""
-#     summarizer = pipeline("summarization", model=MODEL_NAME, framework="pt")
-#     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-#     return summarizer, tokenizer
-
-# summarizer, tokenizer = load_summarizer()
