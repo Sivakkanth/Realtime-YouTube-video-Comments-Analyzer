@@ -22,3 +22,7 @@ youtube-comment-downloader==0.1.76
 
 # Async requests
 httpx==0.28.0
+
+mlflow==3.3.2
+scikit-learn==1.7.1
+datasets==4.0.0

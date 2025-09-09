@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  frontend:
+    build: ./realtime-youtube-video-analyzer
+    container_name: youtube-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_AI_URL=http://ai-service:8000
+    depends_on:
+      - ai-service
+
+  ai-service:
+    build: ./ai-service
+    container_name: youtube-ai
+    ports:
+      - "8000:8000"
+
+  mlflow:
+    image: mlflow/mlflow
+    environment:
+      - MLFLOW_TRACKING_URI=http://0.0.0.0:5000
+    ports:
+      - "5000:5000"
