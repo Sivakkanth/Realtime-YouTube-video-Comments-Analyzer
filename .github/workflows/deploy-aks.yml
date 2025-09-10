@@ -13,7 +13,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Azure Login
-      uses: azure/login@v1
+      uses: azure/login@v2
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
@@ -34,6 +34,11 @@ jobs:
         docker build --platform linux/amd64 -t anlyzer.azurecr.io/backend:latest ./ai-service
         docker push anlyzer.azurecr.io/backend:latest
         
+    - name: Build & Push MLflow Image
+      run: |
+        docker build --platform linux/amd64 -t anlyzer.azurecr.io/mlflow:latest ./mlflow
+        docker push anlyzer.azurecr.io/mlflow:latest
+        
     - name: Set AKS Context
       uses: azure/aks-set-context@v3
       with:
@@ -46,6 +51,7 @@ jobs:
         kubectl wait --for=condition=available ns/youtube-analyzer --timeout=60s || true
         kubectl apply -f k8s/backend-deploy.yml
         kubectl apply -f k8s/frontend-deploy.yml
+        kubectl apply -f k8s/mlflow-deploy.yml
         kubectl apply -f k8s/ingress.yml
         
     - name: Verify Deployments

@@ -5,15 +5,16 @@ ai-service/app/suggesion_model/* filter=lfs diff=lfs merge=lfs -text
 ai-service/mlruns/1/models/**/*.pkl filter=lfs diff=lfs merge=lfs -text
 # Python cache
 ai-service/__pycache__/
-*.pyc
+*.pyc filter=lfs diff=lfs merge=lfs -text
 # MLflow
 ai-service/mlruns/
 ai-service/mlflow.db
 # Models
 ai-service/app/models/
 *.bin
-*.pt
-*.h5
+*.pt filter=lfs diff=lfs merge=lfs -text
+*.h5 filter=lfs diff=lfs merge=lfs -text
 # Docker
 *.log
 ai-service/mlruns/1/models/* filter=lfs diff=lfs merge=lfs -text
+*.db filter=lfs diff=lfs merge=lfs -text

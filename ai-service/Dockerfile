@@ -22,13 +22,17 @@ COPY requirements.txt .
 
 # # Install Python dependencies
 RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+    && pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir mlflow[extras]
 
 # Copy application code including my_model/
 COPY ./app .
 
 # Expose FastAPI port
 EXPOSE 8000
+
+# Set MLflow Tracking URI (points to mlflow container in docker-compose)
+ENV MLFLOW_TRACKING_URI=http://mlflow:5000
 
 # Run Uvicorn server
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

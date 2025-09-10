@@ -1,0 +1,19 @@
+artifact_path: file:D:/Engineering Notes/Semester 7/EC7203/Assignment/project/Realtime-YouTube-video-Comments-Analyzer/ai-service/mlruns/2/models/m-f06339b2d64744fd8934c0e1b4c10dbb/artifacts
+flavors:
+  python_function:
+    cloudpickle_version: 3.1.1
+    code: null
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.pyfunc.model
+    python_model: python_model.pkl
+    python_version: 3.12.8
+    streamable: false
+mlflow_version: 3.3.2
+model_id: m-f06339b2d64744fd8934c0e1b4c10dbb
+model_size_bytes: 542276911
+model_uuid: m-f06339b2d64744fd8934c0e1b4c10dbb
+prompts: null
+run_id: a6460b71bbd74cb89cc871b851f87082
+utc_time_created: '2025-09-10 06:33:35.569405'
