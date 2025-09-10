@@ -34,11 +34,6 @@ jobs:
         docker build --platform linux/amd64 -t anlyzer.azurecr.io/backend:latest ./ai-service
         docker push anlyzer.azurecr.io/backend:latest
         
-    - name: Build & Push MLflow Image
-      run: |
-        docker build --platform linux/amd64 -t anlyzer.azurecr.io/mlflow:latest ./mlflow
-        docker push anlyzer.azurecr.io/mlflow:latest
-        
     - name: Set AKS Context
       uses: azure/aks-set-context@v3
       with:
