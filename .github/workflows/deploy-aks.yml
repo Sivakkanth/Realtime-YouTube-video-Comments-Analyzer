@@ -46,7 +46,6 @@ jobs:
         kubectl wait --for=condition=available ns/youtube-analyzer --timeout=60s || true
         kubectl apply -f k8s/backend-deploy.yml
         kubectl apply -f k8s/frontend-deploy.yml
-        kubectl apply -f k8s/mlflow-deploy.yml
         kubectl apply -f k8s/ingress.yml
         
     - name: Verify Deployments

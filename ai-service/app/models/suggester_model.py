@@ -4,25 +4,24 @@ import mlflow.pyfunc
 mlflow.set_tracking_uri("http://localhost:5000")
 
 # Registered model name
-MODEL_NAME = "youtube_comment_sentiment_analysis"
+MODEL_NAME = "youtube_comment_suggestion"
 
 # Load the latest version automatically
-sentiment_model = mlflow.pyfunc.load_model(f"models:/{MODEL_NAME}/latest")
+suggester_model = mlflow.pyfunc.load_model(f"models:/{MODEL_NAME}/latest")
 
-print("✅ Loaded the latest sentiment model successfully!")
+print("✅ Loaded the latest suggester model successfully!")
 
 # import mlflow.pyfunc
 # import os
 
 # # Path to your MLflow model directory
-# # MODEL_PATH = r"D:\Engineering Notes\Semester 7\EC7203\Assignment\project\Realtime-YouTube-video-Comments-Analyzer\ai-service\mlruns\1\models\m-6f596ecd60ac4a64a26b9225757132d5\artifacts"
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # MODEL_PATH = os.path.join(
 #     BASE_DIR,
 #     "mlruns",
-#     "2",
+#     "3",
 #     "models",
-#     "m-6da0166d88034c299f99908b8627bd34",
+#     "m-25d8b234074f4920885dec2e0196b238",
 #     "artifacts"
 # )
 
@@ -32,6 +31,5 @@ print("✅ Loaded the latest sentiment model successfully!")
 #     raise FileNotFoundError(f"MLmodel file not found in: {MODEL_PATH}")
 
 # # Load the model locally (no MLflow server needed)
-# sentiment_model = mlflow.pyfunc.load_model(MODEL_PATH)
-
-# print("✅ Sentiment model loaded successfully from local path!")
+# suggester_model = mlflow.pyfunc.load_model(MODEL_PATH)
+# print("✅ Suggester model loaded successfully from local path!")
