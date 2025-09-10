@@ -17,4 +17,3 @@ ai-service/app/models/
 ai-service/mlruns/1/models/* filter=lfs diff=lfs merge=lfs -text
 *.db filter=lfs diff=lfs merge=lfs -text
 *.safetensors filter=lfs diff=lfs merge=lfs -text
-*.json filter=lfs diff=lfs merge=lfs -text
