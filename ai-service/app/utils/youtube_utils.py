@@ -38,9 +38,7 @@ def convert_youtube_url(short_url):
         return f'https://www.youtube.com/watch?v={video_id}'
     return None
 
-def extract_video_id(link: str) -> str:
-
-    url = convert_youtube_url(link)
+def extract_video_id(url: str) -> str:
     parsed = urlparse(url)
 
     # Case 1: youtu.be short links
@@ -63,7 +61,9 @@ def extract_video_id(link: str) -> str:
     logger.error(f"Invalid YouTube URL provided: {url}")
     raise ValueError("Invalid YouTube URL format.")
 
-async def get_video_metadata(video_url: str) -> dict:
+async def get_video_metadata(url: str) -> dict:
+    video_id = extract_video_id(url)
+    video_url = f"https://www.youtube.com/watch?v={video_id}"
     headers = {"User-Agent": "Mozilla/5.0"}
     async with httpx.AsyncClient(timeout=20.0) as client:
         resp = await client.get(video_url, headers=headers)

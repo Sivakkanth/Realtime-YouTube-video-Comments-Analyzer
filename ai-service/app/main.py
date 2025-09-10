@@ -8,6 +8,8 @@ from utils.sentiment_utils import classify_comments
 from utils.calculate_positive_score_percentage import calculate_positive_score_percentage
 from utils.summarizer import summarize_comments
 from utils.suggester import generate_suggestions;
+import mlflow.pyfunc
+import mlflow
 
 app = FastAPI(title='YouTube Analyzer', version='1.0')
 
