@@ -1,39 +1,26 @@
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
-from pathlib import Path
-
-# Load the fine-tuned model and tokenizer from the saved directory
-model_path = Path(__file__).parent.parent / "suggesion_model"
-model = AutoModelForSeq2SeqLM.from_pretrained(model_path)
-tokenizer = AutoTokenizer.from_pretrained(model_path)
+from models.suggester_model import suggester_model
+import pandas as pd
 
 def generate_suggestions(comments):
     texts = [
         c['text'].strip()
         for c in comments
-        if isinstance(c.get('text'), str) and c['text'].strip()
+        if isinstance(c.get('text'), str) and c['text'].strip() and c.get('status') == 'n'
     ]
+    
     if not texts:
         return ["No valid comment text to suggest."]
 
-    combined = " ".join(texts)
-    # Tokenize the input text
-    inputs = tokenizer(
-        combined,
-        return_tensors="pt",
-        max_length=1024,
-        truncation=True
-    )
+    combined_text = " ".join(texts)
+    print("Combined Negative Comments:", combined_text)
 
-    # Generate the summary with adjusted parameters
-    summary_ids = model.generate(
-        inputs['input_ids'],
-        max_length=50, # A shorter max length
-        min_length=10, # A more reasonable minimum length
-        num_beams=4,
-        no_repeat_ngram_size=3, # Prevent repeating n-grams
-        early_stopping=True
-    )
+    df = pd.DataFrame({"text": [combined_text]})
+    print("DataFrame passed to model:", df)
 
-    # Decode the generated tokens back to text
-    summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
-    return [summary]
+    try:
+        suggestions = suggester_model.predict(df)
+        if isinstance(suggestions, (list, tuple)):
+            return suggestions
+        return [str(suggestions)]
+    except Exception as e:
+        return [f"Error generating suggestions: {str(e)}"]

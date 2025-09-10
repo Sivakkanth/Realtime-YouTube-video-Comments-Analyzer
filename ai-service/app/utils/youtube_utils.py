@@ -13,20 +13,6 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 executor = ThreadPoolExecutor()
 
-# def extract_video_id(url: str) -> str:
-#     patterns = [
-#         r"youtu\.be/([a-zA-Z0-9_-]{11})",
-#         r"youtube\.com/watch\?v=([a-zA-Z0-9_-]{11})",
-#         r"youtube\.com/embed/([a-zA-Z0-9_-]{11})"
-#     ]
-#     for pattern in patterns:
-#         match = re.search(pattern, url)
-#         if match:
-#             return match.group(1)
-#     logger.error(f"Invalid YouTube URL provided: {url}")
-#     raise ValueError("Invalid YouTube URL format.")
-
-
 def convert_youtube_url(short_url):
     """
     Converts a youtu.be URL to a standard YouTube watch URL.
